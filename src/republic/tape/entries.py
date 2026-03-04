@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import Any
 
 from republic.core.results import ErrorPayload
+
+
+def utc_now() -> str:
+    return datetime.now(UTC).isoformat()
 
 
 @dataclass(frozen=True)
@@ -17,10 +21,10 @@ class TapeEntry:
     kind: str
     payload: dict[str, Any]
     meta: dict[str, Any] = field(default_factory=dict)
-    timestamp: float = field(default_factory=time.time)
+    date: str = field(default_factory=utc_now)
 
     def copy(self) -> TapeEntry:
-        return TapeEntry(self.id, self.kind, dict(self.payload), dict(self.meta), self.timestamp)
+        return TapeEntry(self.id, self.kind, dict(self.payload), dict(self.meta), self.date)
 
     @classmethod
     def message(cls, message: dict[str, Any], **meta: Any) -> TapeEntry:
